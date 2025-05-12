@@ -1,0 +1,9 @@
+body {
+    font-family: Arial;
+    padding: 10px;
+}
+#output {
+    white-space: pre-wrap;
+    max-height: 300px;
+    overflow-y: auto;
+}
