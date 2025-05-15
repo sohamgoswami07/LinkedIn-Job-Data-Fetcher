@@ -1,13 +1,44 @@
 <!doctype html>
 <html>
   <head>
-    <title>Page Fetcher</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Job Listings</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 10px;
+        width: 400px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 6px;
+        font-size: 14px;
+        text-align: left;
+      }
+      th {
+        background: #f4f4f4;
+      }
+    </style>
   </head>
   <body>
-    <h3>Fetch Job Details</h3>
-    <button id="fetch">Fetch Data</button>
-    <div id="output"></div>
+    <h3>Extracted Job Listings</h3>
+    <button id="fetch">Fetch Jobs</button>
+    <table id="jobTable" style="display: none">
+      <thead>
+        <tr>
+          <th>Job Title</th>
+          <th>Company Name</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      <tbody id="jobData"></tbody>
+    </table>
+
     <script src="popup.js"></script>
   </body>
 </html>

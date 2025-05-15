@@ -1,37 +1,41 @@
 document.getElementById('fetch').addEventListener('click', async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    // Execute the content script
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  
     chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['content.js']
+      target: { tabId: tab.id },
+      files: ['content.js']
     });
-
-    // Wait for the content script to send the extracted details
-    setTimeout(() => {
-        chrome.runtime.onMessage.addListener((message) => {
-            if (message.jobTitle && message.jobId && message.companyName) {
-                // Create a table to display the details
-                const output = document.getElementById('output');
-                output.innerHTML = `
-                    <table border="1" style="width: 100%; text-align: left;">
-                        <tr>
-                            <th>Job Title</th>
-                            <td>${message.jobTitle}</td>
-                        </tr>
-                        <tr>
-                            <th>Company Name</th>
-                            <td>${message.companyName}</td>
-                        </tr>
-                        <tr>
-                            <th>Job ID</th>
-                            <td>${message.hrefValue}</td>
-                        </tr>
-                    </table>
-                `;
-            } else {
-                document.getElementById('output').textContent = 'Failed to fetch job details.';
-            }
-        });
-    }, 1000);
-});
+  });
+  
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.jobs && Array.isArray(message.jobs)) {
+      const table = document.getElementById('jobTable');
+      const tbody = document.getElementById('jobData');
+      tbody.innerHTML = ''; // Clear existing rows
+  
+      message.jobs.forEach(job => {
+        const row = document.createElement('tr');
+  
+        const titleCell = document.createElement('td');
+        titleCell.textContent = job.jobTitle;
+  
+        const companyCell = document.createElement('td');
+        companyCell.textContent = job.companyName;
+  
+        const linkCell = document.createElement('td');
+        const link = document.createElement('a');
+        link.href = job.hrefValue;
+        link.textContent = "View";
+        link.target = "_blank";
+        linkCell.appendChild(link);
+  
+        row.appendChild(titleCell);
+        row.appendChild(companyCell);
+        row.appendChild(linkCell);
+        tbody.appendChild(row);
+      });
+  
+      table.style.display = 'table';
+    }
+  });
+  
